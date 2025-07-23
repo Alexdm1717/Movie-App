@@ -9,12 +9,12 @@ const client = new Client().setEndpoint(END_POINT).setProject(PROJECT_ID);
 
 const database = new Databases(client);
 
-export const updateSearchCount = async (searchTerm, movie) => {
+export const updateSearchCount = async (movie) => {
   // 1. Use Appwritte SDK to check if the search term exist in the database
 
   try {
     const result = await database.listDocuments(DATABASE_ID, COLLECTION_ID, [
-      Query.equal("searchTerm", searchTerm),
+      Query.equal("movie_id", movie.id),
     ]);
 
     // 2. If it does, update the count
@@ -28,7 +28,6 @@ export const updateSearchCount = async (searchTerm, movie) => {
       // 3. If it doesn't, create a new document with the search term and count as 1
     } else {
       await database.createDocument(DATABASE_ID, COLLECTION_ID, ID.unique(), {
-        searchTerm,
         count: 1,
         movie_id: movie.id,
         poster_url: `https://image.tmdb.org/t/p/w500${movie.poster_path}`,
@@ -38,3 +37,16 @@ export const updateSearchCount = async (searchTerm, movie) => {
     console.error(error);
   }
 };
+
+export async function getTrendingMovies() {
+  try {
+    const result = await database.listDocuments(DATABASE_ID, COLLECTION_ID, [
+      Query.limit(5),
+      Query.orderDesc("count"),
+    ]);
+
+    return result.documents;
+  } catch (error) {
+    console.error(error);
+  }
+}
