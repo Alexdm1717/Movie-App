@@ -32,7 +32,7 @@ function App() {
   const [errorMessageTrending, setErrorMessageTrending] = useState(null);
   const [isLoadingTrending, setIsLoadingTrending] = useState(false);
 
-  useDebounce(() => setDebouncedSearchTerm(searchTerm), 500, [searchTerm]);
+  useDebounce(() => setDebouncedSearchTerm(searchTerm), 1200, [searchTerm]);
 
   const fetchMovies = async (query = "") => {
     setIsLoading(true);
